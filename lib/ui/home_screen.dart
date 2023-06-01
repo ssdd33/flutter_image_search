@@ -1,10 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_search/data/photo_provider.dart';
+import 'package:flutter_image_search/model/photo.dart';
+import 'package:flutter_image_search/ui/widget/photo_widget.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({
+    super.key,
+  });
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = PhotoProvider.of(context).viewModel;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -19,39 +38,45 @@ class HomeScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: TextField(
+            controller: _controller,
             decoration: InputDecoration(
               border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
               suffixIcon: IconButton(
-                onPressed: () {},
+                onPressed: () async {
+                  viewModel.fetch(_controller.text);
+                },
                 icon: const Icon(Icons.search),
               ),
             ),
           ),
         ),
-        Expanded(
-          child: GridView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: 10,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-              ),
-              itemBuilder: (context, index) {
-                return Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                          'https://www.cyso.co.kr/data/editor/2110/20211004124533_7098fe26daa694e9da3a00aeba11c554_j2lh.jpg'),
+        StreamBuilder<List<Photo>>(
+            stream: viewModel.photoStream,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const CircularProgressIndicator();
+              }
+              final photos = snapshot.data!;
+              return Expanded(
+                child: GridView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: photos.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
                     ),
-                  ),
-                );
-              }),
-        ),
+                    itemBuilder: (context, index) {
+                      final photo = photos[index];
+                      return PhotoWidget(
+                        photo: photo,
+                      );
+                    }),
+              );
+            })
       ]),
     );
   }
