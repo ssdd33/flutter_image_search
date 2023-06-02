@@ -6,12 +6,12 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('check stream', () async {
     final viewModel = HomeViewModel(FakePhotoApiRepository());
+    // await viewModel.fetch('apple');
+
     await viewModel.fetch('apple');
-    await viewModel.fetch('apple');
-    expect(
-      viewModel.photoStream,
-      emitsInOrder([isA<List<Photo>>()]),
-    );
+
+    final List<Photo> result = fakeJson.map((e) => Photo.fromJson(e)).toList();
+    expect(viewModel.photos, result);
   });
 }
 

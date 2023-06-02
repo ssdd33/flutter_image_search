@@ -1,19 +1,24 @@
 import 'dart:async';
+import 'dart:collection';
+
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter_image_search/data/photo_api_repository.dart';
 import 'package:flutter_image_search/model/photo.dart';
 
-class HomeViewModel {
+class HomeViewModel with ChangeNotifier {
   final PhotoApiRepository repository;
+
+  List<Photo> _photos = [];
+  UnmodifiableListView<Photo> get photos => UnmodifiableListView(_photos);
+
   HomeViewModel(
     this.repository,
   );
 
-  final _PhotoStreamController = StreamController<List<Photo>>()..add([]);
-  Stream<List<Photo>> get photoStream => _PhotoStreamController.stream;
-
   Future<void> fetch(String query) async {
     final result = await repository.fetch(query);
-    _PhotoStreamController.add(result);
+    _photos = result;
+    notifyListeners();
   }
 }
