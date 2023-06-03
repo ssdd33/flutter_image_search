@@ -1,6 +1,6 @@
-import 'package:flutter_image_search/data/photo_api_repository.dart';
-import 'package:flutter_image_search/model/photo.dart';
-import 'package:flutter_image_search/ui/home_view_model.dart';
+import 'package:flutter_image_search/domain/repository/photo_api_repository.dart';
+import 'package:flutter_image_search/domain/model/photo.dart';
+import 'package:flutter_image_search/presentation/home/home_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
