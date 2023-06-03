@@ -6,12 +6,17 @@ import 'package:flutter_image_search/data/source/result.dart';
 
 import 'package:flutter_image_search/domain/repository/photo_api_repository.dart';
 import 'package:flutter_image_search/domain/model/photo.dart';
+import 'package:flutter_image_search/presentation/home/home_ui_event.dart';
 
 class HomeViewModel with ChangeNotifier {
   final PhotoApiRepository repository;
 
   List<Photo> _photos = [];
   UnmodifiableListView<Photo> get photos => UnmodifiableListView(_photos);
+
+  final _eventController = StreamController<HomeUiEvent>();
+
+  Stream<HomeUiEvent> get eventStream => _eventController.stream;
 
   HomeViewModel(
     this.repository,
@@ -24,7 +29,7 @@ class HomeViewModel with ChangeNotifier {
       _photos = photos;
       notifyListeners();
     }, error: (message) {
-      print(message);
+      _eventController.add(HomeUiEvent.showSnackBar(message));
     });
   }
 }

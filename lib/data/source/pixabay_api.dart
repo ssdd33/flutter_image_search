@@ -21,7 +21,7 @@ class PixabayApi {
       Iterable hits = jsonResponse['hits'];
       return Result.success(hits);
     } catch (e) {
-      return const Result.error('message');
+      return const Result.error('이미지 로딩 실패');
     }
   }
 }
