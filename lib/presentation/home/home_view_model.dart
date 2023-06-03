@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_image_search/data/source/result.dart';
 
 import 'package:flutter_image_search/domain/repository/photo_api_repository.dart';
 import 'package:flutter_image_search/domain/model/photo.dart';
@@ -17,8 +18,13 @@ class HomeViewModel with ChangeNotifier {
   );
 
   Future<void> fetch(String query) async {
-    final result = await repository.fetch(query);
-    _photos = result;
-    notifyListeners();
+    final Result<List<Photo>> result = await repository.fetch(query);
+
+    result.when(success: (photos) {
+      _photos = photos;
+      notifyListeners();
+    }, error: (message) {
+      print(message);
+    });
   }
 }

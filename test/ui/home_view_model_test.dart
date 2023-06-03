@@ -1,3 +1,4 @@
+import 'package:flutter_image_search/data/source/result.dart';
 import 'package:flutter_image_search/domain/repository/photo_api_repository.dart';
 import 'package:flutter_image_search/domain/model/photo.dart';
 import 'package:flutter_image_search/presentation/home/home_view_model.dart';
@@ -17,9 +18,9 @@ void main() {
 
 class FakePhotoApiRepository extends PhotoApiRepository {
   @override
-  Future<List<Photo>> fetch(String query) async {
+  Future<Result<List<Photo>>> fetch(String query) async {
     Future.delayed(const Duration(milliseconds: 500));
-    return fakeJson.map((e) => Photo.fromJson(e)).toList();
+    return Result.success(fakeJson.map((e) => Photo.fromJson(e)).toList());
   }
 }
 
