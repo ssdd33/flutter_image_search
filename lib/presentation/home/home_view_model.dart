@@ -10,7 +10,9 @@ import 'package:flutter_image_search/presentation/home/home_ui_event.dart';
 
 class HomeViewModel with ChangeNotifier {
   final PhotoApiRepository repository;
+  bool _isLoading = false;
 
+  bool get isLoading => _isLoading;
   List<Photo> _photos = [];
   UnmodifiableListView<Photo> get photos => UnmodifiableListView(_photos);
 
@@ -23,6 +25,8 @@ class HomeViewModel with ChangeNotifier {
   );
 
   Future<void> fetch(String query) async {
+    _isLoading = true;
+    notifyListeners();
     final Result<List<Photo>> result = await repository.fetch(query);
 
     result.when(success: (photos) {
@@ -31,5 +35,7 @@ class HomeViewModel with ChangeNotifier {
     }, error: (message) {
       _eventController.add(HomeUiEvent.showSnackBar(message));
     });
+    _isLoading = false;
+    notifyListeners();
   }
 }
