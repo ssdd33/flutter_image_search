@@ -3,28 +3,27 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_search/data/source/result.dart';
 
-import 'package:flutter_image_search/domain/repository/photo_api_repository.dart';
 import 'package:flutter_image_search/domain/model/photo.dart';
+import 'package:flutter_image_search/domain/use_case/get_photos_use_case.dart';
 import 'package:flutter_image_search/presentation/home/home_state.dart';
 import 'package:flutter_image_search/presentation/home/home_ui_event.dart';
 
 class HomeViewModel with ChangeNotifier {
-  final PhotoApiRepository repository;
+  GetPhotosUseCase getPhotosUseCase;
   HomeState _state = HomeState(false, []);
   HomeState get state => _state;
 
   final _eventController = StreamController<HomeUiEvent>();
-
   Stream<HomeUiEvent> get eventStream => _eventController.stream;
 
   HomeViewModel(
-    this.repository,
+    this.getPhotosUseCase,
   );
 
   Future<void> fetch(String query) async {
     _state = state.copyWith(isLoading: true);
     notifyListeners();
-    final Result<List<Photo>> result = await repository.fetch(query);
+    final Result<List<Photo>> result = await getPhotosUseCase.excute(query);
 
     result.when(success: (photos) {
       _state = state.copyWith(photos: photos);

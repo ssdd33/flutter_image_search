@@ -1,12 +1,13 @@
 import 'package:flutter_image_search/data/source/result.dart';
 import 'package:flutter_image_search/domain/repository/photo_api_repository.dart';
 import 'package:flutter_image_search/domain/model/photo.dart';
+import 'package:flutter_image_search/domain/use_case/get_photos_use_case.dart';
 import 'package:flutter_image_search/presentation/home/home_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('check stream', () async {
-    final viewModel = HomeViewModel(FakePhotoApiRepository());
+    final viewModel = HomeViewModel(GetPhotosUseCase(FakePhotoApiRepository()));
     // await viewModel.fetch('apple');
 
     await viewModel.fetch('apple');
@@ -82,5 +83,5 @@ List<Map<String, dynamic>> fakeJson = [
     "user": "Pexels",
     "userImageURL":
         "https://cdn.pixabay.com/user/2016/03/26/22-06-36-459_250x250.jpg"
-  }
+  },
 ];
